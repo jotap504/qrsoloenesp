@@ -1,0 +1,15 @@
+1. Modo Punto de Acceso (Configuración Inicial)
+Cuando el equipo no tiene WiFi o entras en modo configuración (manteniendo el botón presionado 5s):
+
+SSID (Nombre WiFi): ESP32_QR_XXXX (donde XXXX son los últimos dígitos del ID único).
+Password WiFi: admin1234
+IP de Acceso: 192.168.4.1
+URL: http://192.168.4.1/admin
+2. Panel de Administración (Web)
+Para ingresar al panel de control una vez conectado a la red:
+
+Usuario: admin
+Password: admin (ahora ya puedes cambiarla desde el mismo panel).
+Hostname: http://qr.local/admin (o el nombre que le hayas asignado al dispositivo).
+3. Códigos Especiales
+Código Secreto en Teclado: 987654 (si lo escribes en la pantalla TFT y pulsas Generar QR, el equipo entrará en modo configuración/AP sin necesidad de abrir la caja).
