@@ -13,7 +13,7 @@
 #include "DisplayManager.h" // Added DisplayManager
 #include "MercadoPagoClient.h"
 #include "SettingsManager.h"
-
+#include "SoundManager.h" // Restored
 #include "config.h"
 
 WebServer server(80);
@@ -21,6 +21,7 @@ MercadoPagoClient mpClient(MP_ACCESS_TOKEN);
 SettingsManager settingsManager;
 DNSServer dnsServer;
 DisplayManager display; // Added instance
+SoundManager soundManager; // Restored
 
 const int NUM_PAYMENTS = 3;
 PaymentSettings payments[NUM_PAYMENTS] = {
@@ -79,6 +80,7 @@ void onServiceActivation() {
     // Log to Google Sheets (Non-blocking ideally, move to after for better UX)
     logToGoogleSheets(currentAmount, currentUnits, currentExternalRef);
     
+    soundManager.playServiceActivated();
     display.showSuccess(); // Show final success screen ("Disfrute su compra")
     Serial.println("--- SERVICE ACTIVATION END ---");
 }
@@ -94,6 +96,7 @@ void handlePaymentApproved() {
     paymentConfirmed = true;
     
     Serial.println("Payment Approved! Waiting for user activation...");
+    soundManager.playSuccess(); // IMMEDIATE FEEDBACK
     display.showReady();
 }
 
@@ -224,6 +227,7 @@ void connectToWiFi() {
     digitalWrite(PIN_LED, LOW);
     Serial.println("\nWiFi Connected! IP: " + WiFi.localIP().toString());
     display.showConnectionSuccess(WiFi.localIP().toString(), "http://" + activeHostname + ".local");
+    soundManager.playStartupSound(); // Play sound now that WiFi is ready
     // mDNS Setup again just in case IP changed
     if (MDNS.begin(activeHostname.c_str())) {
       MDNS.addService("http", "tcp", 80);
@@ -1398,6 +1402,9 @@ void setup() {
   mpClient.setAccessToken(settingsManager.mpAccessToken);
   
   display.begin();       // Init Display first so labels are created
+  soundManager.begin();  // Init Audio
+  display.setSoundManager(&soundManager); // Link audio to display
+
   display.setPricePerUnit(settingsManager.pricePerUnit);
   display.setOperationMode(settingsManager.operationMode);
   // Pass Initial Promo Config
@@ -1790,6 +1797,7 @@ void loop() {
     long remaining = (long)relayOffTime - (long)millis();
     if (remaining <= 60000 && remaining > 0) {
       warningShown = true;
+      soundManager.playWarning(); // Trigger audio alert
       display.showWarning("¡AVISO!\nQueda 1 minuto de servicio");
     }
   }
@@ -1810,6 +1818,7 @@ void loop() {
     }
   }
 
+  soundManager.loop(); 
   display.loop();
   delay(1);
 }

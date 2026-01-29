@@ -45,6 +45,7 @@ public:
   void setFixedModeConfig(int units);
   void setStaticQrText(String text);
   void setWiFiStatus(bool connected);
+  void setSoundManager(void * mgr) { _soundManager = mgr; }
 
 private:
   Arduino_DataBus *bus;
@@ -104,6 +105,9 @@ private:
   unsigned long _lastActivity = 0;
   bool _isShowingAds = false;
   
+  // Sound Hook
+  void * _soundManager = nullptr;
+
   int _currentAdIndex = 0;
   lv_timer_t * _adTimer = nullptr;
   

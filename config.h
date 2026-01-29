@@ -6,7 +6,7 @@ const char *WIFI_SSID = "Fibrasky";
 const char *WIFI_PASS = "corsa000";
 
 // Hardware Pins
-const int PIN_LED = 2;    // Built-in LED on GPIO2
+const int PIN_LED = -1;    // Built-in LED disabled (GPIO2 needed for Audio I2S LRC)
 const int PIN_RELAY = 14; // Relay on GPIO14 (GPIO4 conflicts with Touch SDA)
 const int PIN_CONFIG_BUTTON = 0; // Hold for 5s to enter AP Mode
 

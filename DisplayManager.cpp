@@ -1,5 +1,5 @@
 #include "DisplayManager.h"
-
+#include "SoundManager.h"
 
 #include "qrcode.h"
 #include <FS.h>
@@ -282,7 +282,9 @@ void DisplayManager::event_handler_num(lv_event_t * e) {
     const char * txt = lv_buttonmatrix_get_button_text(obj, id);
     
     // Play Click Sound
-
+    if(instance->_soundManager) {
+        ((SoundManager*)instance->_soundManager)->playClick();
+    }
     
     if (strcmp(txt, "C") == 0) {
         instance->currentAmountStr = "0";
@@ -325,7 +327,7 @@ void DisplayManager::event_handler_num(lv_event_t * e) {
 }
 
 void DisplayManager::event_handler_gen(lv_event_t * e) {
-    // if(instance->_soundManager) ((SoundManager*)instance->_soundManager)->playClick();
+    if(instance->_soundManager) ((SoundManager*)instance->_soundManager)->playQrGenerated();
     
     // Validate Amount
     if (instance->currentAmountStr == "" || instance->currentAmountStr == "0") return;
@@ -431,7 +433,7 @@ void DisplayManager::createQRUI() {
 }
 
 void DisplayManager::showQR(String url, float total) {
-
+    if(_soundManager) ((SoundManager*)_soundManager)->playClick(); // Feedback for QR Ready
 
     Serial.printf("showQR START. URL length: %d, Free Heap: %u\n", url.length(), ESP.getFreeHeap());
     Serial.flush();
